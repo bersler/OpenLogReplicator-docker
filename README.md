@@ -9,6 +9,6 @@ You can download the files from https://www.oracle.com/database/technologies/ins
 
 Place the files in the main folder and run:
 
-  bash build.sh
+    bash build.sh
 
 The script will automatically create a docker image with OpenLogReplicator. The image is based on CentOS 7.
