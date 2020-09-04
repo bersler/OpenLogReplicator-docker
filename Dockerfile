@@ -23,8 +23,8 @@
 # REQUIRED FILES TO BUILD THIS IMAGE
 # ----------------------------------
 #
-# (1) instantclient-basic-linux.x64-11.2.0.4.0.zip
-# (2) instantclient-sdk-linux.x64-11.2.0.4.0.zip
+# (1) instantclient-basic-linux.x64-19.8.0.0.zip
+# (2) instantclient-sdk-linux.x64-19.8.0.0.zip
 #     Download from https://www.oracle.com/database/technologies/instant-client.html
 #
 # HOW TO BUILD THIS IMAGE
@@ -40,11 +40,11 @@ FROM centos:7 as builder
 
 MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 
-COPY instantclient-basic-linux.x64-11.2.0.4.0.zip /tmp/instantclient-basic-linux.x64-11.2.0.4.0.zip
-COPY instantclient-sdk-linux.x64-11.2.0.4.0.zip /tmp/instantclient-sdk-linux.x64-11.2.0.4.0.zip
+COPY instantclient-basic-linux.x64-19.8.0.0.0dbru.zip /tmp/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip
+COPY instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip /tmp/instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip
 
 ENV LANG en_US.UTF-8
-ENV LD_LIBRARY_PATH=/opt/instantclient_11_2:/usr/local/lib
+ENV LD_LIBRARY_PATH=/opt/instantclient_19_8:/opt/librdkafka/lib
 
 RUN set -eux ; \
 	yum -y update ; \
@@ -61,22 +61,20 @@ RUN set -eux ; \
 	rm -rf /var/cache/yum ; \
 	cd /usr/lib64 ; \
 	cd /opt ; \
-	unzip /tmp/instantclient-basic-linux.x64-11.2.0.4.0.zip ; \
-	unzip /tmp/instantclient-sdk-linux.x64-11.2.0.4.0.zip ; \
-	cd /opt/instantclient_11_2 ; \
-	ln -s libocci.so.11.1 libocci.so ; \
-	ln -s libclntsh.so.11.1 libclntsh.so ; \
+	unzip /tmp/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip ; \
+	unzip /tmp/instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip ; \
 	cd /opt ; \
 	git clone https://github.com/Tencent/rapidjson/ ; \
-	cd /opt ; \
+	mkdir /opt/librdkafka-src ; \
+	cd /opt/librdkafka-src ; \
 	git clone https://github.com/edenhill/librdkafka ; \
-	cd /opt/librdkafka ; \
-	./configure ; \
+	cd librdkafka ; \
+	./configure --prefix=/opt/librdkafka ; \
 	make ; \
 	make install ; \
 	cd /opt ; \
 	git clone https://github.com/bersler/OpenLogReplicator ; \
-	cd /opt/OpenLogReplicator/Debug ; \
+	cd /opt/OpenLogReplicator ; \
+	./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_8 ; \
 	make ; \
-	cd /opt/OpenLogReplicator/Release ; \
-	make
+	./src/OpenLogReplicator
