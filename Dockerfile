@@ -57,6 +57,8 @@ RUN set -eux ; \
 		libasan \
 		libaio-devel \
 		libnsl \
+		autoconf \
+		automake \
 		tar ; \
 	rm -rf /var/cache/yum ; \
 	cd /usr/lib64 ; \
@@ -64,7 +66,7 @@ RUN set -eux ; \
 	unzip /tmp/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip ; \
 	unzip /tmp/instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip ; \
 	cd /opt ; \
-	git clone https://github.com/Tencent/rapidjson/ ; \
+	git clone https://github.com/Tencent/rapidjson ; \
 	mkdir /opt/librdkafka-src ; \
 	cd /opt/librdkafka-src ; \
 	git clone https://github.com/edenhill/librdkafka ; \
@@ -75,6 +77,7 @@ RUN set -eux ; \
 	cd /opt ; \
 	git clone https://github.com/bersler/OpenLogReplicator ; \
 	cd /opt/OpenLogReplicator ; \
+	autoreconf -f -i ; \
 	./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_8 ; \
 	make ; \
 	./src/OpenLogReplicator
