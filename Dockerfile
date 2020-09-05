@@ -59,12 +59,15 @@ RUN set -eux ; \
 		libnsl \
 		autoconf \
 		automake \
+		libtool \
 		tar ; \
 	rm -rf /var/cache/yum ; \
 	cd /usr/lib64 ; \
 	cd /opt ; \
 	unzip /tmp/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip ; \
 	unzip /tmp/instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip ; \
+	cd /opt/instantclient_19_8 ; \
+	ln -s libclntshcore.so.19.1 libclntshcore.so ; \
 	cd /opt ; \
 	git clone https://github.com/Tencent/rapidjson ; \
 	mkdir /opt/librdkafka-src ; \
