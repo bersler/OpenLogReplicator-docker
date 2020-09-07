@@ -60,9 +60,9 @@ RUN set -eux ; \
 		autoconf \
 		automake \
 		libtool \
+		wget \
 		tar ; \
 	rm -rf /var/cache/yum ; \
-	cd /usr/lib64 ; \
 	cd /opt ; \
 	unzip /tmp/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip ; \
 	unzip /tmp/instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip ; \
@@ -76,6 +76,22 @@ RUN set -eux ; \
 	cd librdkafka ; \
 	./configure --prefix=/opt/librdkafka ; \
 	make ; \
+	make install ; \
+	export MY_INSTALL_DIR=/opt/grpc ; \
+	mkdir -p $MY_INSTALL_DIR ; \
+	export PATH=$PATH:$MY_INSTALL_DIR/bin ; \
+	wget -q -O cmake-linux.sh https://github.com/Kitware/CMake/releases/download/v3.17.0/cmake-3.17.0-Linux-x86_64.sh ; \
+	sh cmake-linux.sh -- --skip-license --prefix=$MY_INSTALL_DIR ; \
+	rm cmake-linux.sh ; \
+	mkdir /opt/grpc-src ; \
+	cd /opt/grpc-src ; \
+	git clone --recurse-submodules -b v1.31.0 https://github.com/grpc/grpc ; \
+	cd grpc ; \
+	mkdir -p cmake/build ; \
+    pushd cmake/build ; \
+    cmake -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$MY_INSTALL_DIR ../.. ; \
+	popd ; \
+	make -j ; \
 	make install ; \
 	cd /opt ; \
 	git clone https://github.com/bersler/OpenLogReplicator ; \
