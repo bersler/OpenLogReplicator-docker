@@ -23,8 +23,8 @@
 # REQUIRED FILES TO BUILD THIS IMAGE
 # ----------------------------------
 #
-# (1) instantclient-basic-linux.x64-19.8.0.0.zip
-# (2) instantclient-sdk-linux.x64-19.8.0.0.zip
+# (1) instantclient-basic-linux.x64-19.9.0.0.zip
+# (2) instantclient-sdk-linux.x64-19.9.0.0.zip
 #     Download from https://www.oracle.com/database/technologies/instant-client.html
 #
 # HOW TO BUILD THIS IMAGE
@@ -40,8 +40,8 @@ FROM centos:7 as builder
 
 MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 
-COPY instantclient-basic-linux.x64-19.8.0.0.0dbru.zip /tmp/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip
-COPY instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip /tmp/instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip
+COPY instantclient-basic-linux.x64-19.9.0.0.0dbru.zip /tmp/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
+COPY instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip /tmp/instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
 
 ENV LANG en_US.UTF-8
 ENV LD_LIBRARY_PATH=/opt/instantclient_19_8:/opt/librdkafka/lib
@@ -64,8 +64,8 @@ RUN set -eux ; \
 		tar ; \
 	rm -rf /var/cache/yum ; \
 	cd /opt ; \
-	unzip /tmp/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip ; \
-	unzip /tmp/instantclient-sdk-linux.x64-19.8.0.0.0dbru.zip ; \
+	unzip /tmp/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip ; \
+	unzip /tmp/instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip ; \
 	cd /opt/instantclient_19_8 ; \
 	ln -s libclntshcore.so.19.1 libclntshcore.so ; \
 	cd /opt ; \
