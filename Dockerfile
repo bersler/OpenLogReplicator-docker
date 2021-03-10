@@ -44,7 +44,7 @@ COPY instantclient-basic-linux.x64-19.9.0.0.0dbru.zip /tmp/instantclient-basic-l
 COPY instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip /tmp/instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
 
 ENV LANG en_US.UTF-8
-ENV LD_LIBRARY_PATH=/opt/instantclient_19_8:/opt/librdkafka/lib
+ENV LD_LIBRARY_PATH=/opt/instantclient_19_9:/opt/librdkafka/lib
 
 RUN set -eux ; \
 	yum -y update ; \
@@ -66,7 +66,7 @@ RUN set -eux ; \
 	cd /opt ; \
 	unzip /tmp/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip ; \
 	unzip /tmp/instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip ; \
-	cd /opt/instantclient_19_8 ; \
+	cd /opt/instantclient_19_9 ; \
 	ln -s libclntshcore.so.19.1 libclntshcore.so ; \
 	cd /opt ; \
 	git clone https://github.com/Tencent/rapidjson ; \
@@ -96,6 +96,6 @@ RUN set -eux ; \
 	git clone https://github.com/bersler/OpenLogReplicator ; \
 	cd /opt/OpenLogReplicator ; \
 	autoreconf -f -i ; \
-	./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_8 ; \
+	./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_9 ; \
 	make ; \
 	./src/OpenLogReplicator
