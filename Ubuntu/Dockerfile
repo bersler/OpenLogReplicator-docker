@@ -1,4 +1,4 @@
-# Copyright (C) 2018-2020 Adam Leszczynski.
+# Copyright (C) 2018-2021 Adam Leszczynski.
 #
 # This file is part of Open Log Replicator docker template.
 # 
@@ -36,7 +36,7 @@
 # This command is already scripted on build.sh so you can alternatively run
 #		$ bash build.sh
 
-FROM centos:7 as builder
+FROM ubuntu:20.04 as builder
 
 MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 
@@ -46,23 +46,20 @@ COPY instantclient-sdk-linux.x64-19.10.0.0.0dbru.zip /tmp/instantclient-sdk-linu
 ENV LANG en_US.UTF-8
 ENV LD_LIBRARY_PATH=/opt/instantclient_19_10:/opt/librdkafka/lib
 
+SHELL ["/bin/bash", "-c"]
+
 RUN set -eux ; \
-	yum -y update ; \
-	yum install -y \
-		make \
-		gcc \
-		gcc-c++ \
-		git \
-		unzip \
-		libasan \
-		libaio-devel \
-		libnsl \
-		autoconf \
-		automake \
-		libtool \
-		wget \
-		tar ; \
-	rm -rf /var/cache/yum ; \
+	apt -y update ; \
+	apt -y upgrade ; \
+	apt -y install \
+	       gcc \
+	       make \
+	       git \
+	       libtool \
+	       g++ \
+	       libaio1 \
+	       unzip \ 
+	       wget ; \
 	cd /opt ; \
 	unzip /tmp/instantclient-basic-linux.x64-19.10.0.0.0dbru.zip ; \
 	unzip /tmp/instantclient-sdk-linux.x64-19.10.0.0.0dbru.zip ; \
@@ -87,8 +84,8 @@ RUN set -eux ; \
 	git clone --recurse-submodules -b v1.31.0 https://github.com/grpc/grpc ; \
 	cd grpc ; \
 	mkdir -p cmake/build ; \
-    pushd cmake/build ; \
-    cmake -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/opt/grpc ../.. ; \
+	pushd cmake/build ; \
+	cmake -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/opt/grpc ../.. ; \
 	make -j ; \
 	make install ; \
 	popd ; \

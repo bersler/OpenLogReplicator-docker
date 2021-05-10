@@ -7,8 +7,16 @@ To create a dockerfile you must download Oracle Instant Client from Oracle:
 
 You can download the files from https://www.oracle.com/database/technologies/instant-client.html
 
-Place the files in the main folder and run:
+1. Compile with CentOS 7 image:
+Place the files in the folder and run:
 
+    cd CentOS
     bash build.sh
 
-The script will automatically create a docker image with OpenLogReplicator. The image is based on CentOS 7.
+2. Compile with Ubuntu 20.04 image:
+Place the files in the folder and run:
+
+    cd Ubuntu
+    bash build.sh
+
+The script will automatically create a docker image with OpenLogReplicator.
