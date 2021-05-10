@@ -10,13 +10,13 @@ You can download the files from https://www.oracle.com/database/technologies/ins
 1. Compile with CentOS 7 image:
 Place the files in the folder and run:
 
-    cd CentOS
-    bash build.sh
+        cd CentOS
+        bash build.sh
 
 2. Compile with Ubuntu 20.04 image:
 Place the files in the folder and run:
 
-    cd Ubuntu
-    bash build.sh
+        cd Ubuntu
+        bash build.sh
 
 The script will automatically create a docker image with OpenLogReplicator.
