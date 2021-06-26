@@ -77,21 +77,6 @@ RUN set -eux ; \
 	./configure --prefix=/opt/librdkafka ; \
 	make ; \
 	make install ; \
-	mkdir -p /opt/grpc ; \
-	export PATH=$PATH:/opt/grpc/bin ; \
-	wget -q -O cmake-linux.sh https://github.com/Kitware/CMake/releases/download/v3.17.0/cmake-3.17.0-Linux-x86_64.sh ; \
-	sh cmake-linux.sh -- --skip-license --prefix=/opt/grpc ; \
-	rm -f cmake-linux.sh ; \
-	mkdir /opt/grpc-src ; \
-	cd /opt/grpc-src ; \
-	git clone --recurse-submodules -b v1.31.0 https://github.com/grpc/grpc ; \
-	cd grpc ; \
-	mkdir -p cmake/build ; \
-	pushd cmake/build ; \
-	cmake -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/opt/grpc ../.. ; \
-	make -j ; \
-	make install ; \
-	popd ; \
 	cd /opt ; \
 	git clone https://github.com/bersler/OpenLogReplicator ; \
 	cd /opt/OpenLogReplicator ; \
