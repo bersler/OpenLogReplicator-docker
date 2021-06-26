@@ -33,8 +33,8 @@ Place the files in the folder and run:
 
 The script will automatically create a docker image with OpenLogReplicator. As a result you should see something like:
 
-+ ./src/OpenLogReplicator
-2021-06-26 23:05:06 [INFO] OpenLogReplicator v.0.9.2-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
-2021-06-26 23:05:06 [ERROR] can't open file OpenLogReplicator.json
+        + ./src/OpenLogReplicator
+        2021-06-26 23:05:06 [INFO] OpenLogReplicator v.0.9.2-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
+        2021-06-26 23:05:06 [ERROR] can't open file OpenLogReplicator.json
 
 It means that the binary is correctly build. Just the program requires config file to run, but all dependencies and libraries are correct.
