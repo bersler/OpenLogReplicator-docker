@@ -7,34 +7,40 @@ To create a dockerfile you must download Oracle Instant Client from Oracle:
 
 You can download the files from https://www.oracle.com/database/technologies/instant-client.html
 
-1. Compile with CentOS 7 image:
+1. Compile with CentOS 7 image: bersler/openlogreplicator:centos-7
 Place the files in the folder and run:
 
-        cd CentOS
-        bash build.sh
+        docker build -t bersler/openlogreplicator:centos-7 -f Dockerfile-centos-7 .
 
-2. Compile with CentOS 7 image with protobuf:
+2. Compile with CentOS 7 image with protobuf: bersler/openlogreplicator-pb:centos-7
 Place the files in the folder and run:
 
-        cd CentOS-protobuf
-        bash build.sh
+        docker build -t bersler/openlogreplicator-pb:centos-7 -f Dockerfile-centos-7-pb .
 
-3. Compile with Ubuntu 20.04 image:
+3. Compile with Ubuntu 20.04 image: bersler/openlogreplicator:ubuntu-20.04
 Place the files in the folder and run:
 
-        cd Ubuntu
-        bash build.sh
+        docker build -t bersler/openlogreplicator:ubuntu-20.04 -f Dockerfile-ubuntu-20.04 .
 
-4. Compile with Ubuntu 20.04 image with protobuf:
+4. Compile with Ubuntu 20.04 image with protobuf: bersler/openlogreplicator-pb:ubuntu-20.04
 Place the files in the folder and run:
 
-        cd Ubuntu-protobuf
-        bash build.sh
+        docker build -t bersler/openlogreplicator-pb:ubuntu-20.04 -f Dockerfile-ubuntu-20.04-pb .
 
-The script will automatically create a docker image with OpenLogReplicator. As a result you should see something like:
+The script will automatically create a docker image with /opt/OpenLogReplicator. As a result you should see version banner:
 
         + ./src/OpenLogReplicator
-        2021-06-26 23:05:06 [INFO] OpenLogReplicator v.0.9.2-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
-        2021-06-26 23:05:06 [ERROR] can't open file OpenLogReplicator.json
+        2021-07-04 12:34:56 [INFO] OpenLogReplicator v.0.9.7-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
 
-It means that the binary is correctly build. Just the program requires config file to run, but all dependencies and libraries are correct.
+It means that the binary is correctly build.
+
+5. Running example:
+
+        mkdir script
+        mkdir checkpoint
+        vi scripts/OpenLogReplicator.json
+        # create some content for config and run
+        docker run --name OpenLogReplicator -v /opt/fast-recovery-area:/opt/fast-recovery-area \
+        -v ./scripts:/opt/OpenLogReplicator/scripts \
+        -v ./checkpoint:/opt/OpenLogReplicator/checkpoint \
+        bersler/openlogreplicator:ubuntu-20.04
