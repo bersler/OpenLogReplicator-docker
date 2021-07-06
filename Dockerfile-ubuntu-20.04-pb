@@ -81,6 +81,12 @@ RUN set -eux ; \
     cd /opt/OpenLogReplicator-src/OpenLogReplicator ; \
     autoreconf -f -i ; \
     ./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_11 --with-protobuf=/opt/protobuf ; \
+    cd proto ; \
+    export PATH=/opt/protobuf/bin:$PATH ; \
+    protoc OraProtoBuf.proto --cpp_out=. ; \
+    mv OraProtoBuf.pb.cc ../src/OraProtoBuf.pb.cpp ; \
+    mv OraProtoBuf.pb.h ../src/OraProtoBuf.pb.h ; \
+    cd .. ; \
     make ; \
     mv src/OpenLogReplicator /opt/OpenLogReplicator ; \
     mv scripts/* /opt/OpenLogReplicator/scripts-src ; \

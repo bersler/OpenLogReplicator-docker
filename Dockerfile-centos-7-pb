@@ -43,6 +43,7 @@ COPY instantclient-sdk-linux.x64-19.11.0.0.0dbru.zip /tmp/instantclient-sdk-linu
 
 ENV LANG en_US.UTF-8
 ENV LD_LIBRARY_PATH=/opt/instantclient_19_11:/opt/librdkafka/lib
+ENV PROTOBUF_VERSION 3.17.3
 
 RUN set -eux ; \
     yum install -y make gcc gcc-c++ git file unzip libasan libaio-devel libnsl autoconf automake libtool wget tar ; \
@@ -79,6 +80,12 @@ RUN set -eux ; \
     cd /opt/OpenLogReplicator-src/OpenLogReplicator ; \
     autoreconf -f -i ; \
     ./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_11 --with-protobuf=/opt/protobuf ; \
+    cd proto ; \
+    export PATH=/opt/protobuf/bin:$PATH ; \
+    protoc OraProtoBuf.proto --cpp_out=. ; \
+    mv OraProtoBuf.pb.cc ../src/OraProtoBuf.pb.cpp ; \
+    mv OraProtoBuf.pb.h ../src/OraProtoBuf.pb.h ; \
+    cd .. ; \
     make ; \
     mv src/OpenLogReplicator /opt/OpenLogReplicator ; \
     mv scripts/* /opt/OpenLogReplicator/scripts-src ; \
