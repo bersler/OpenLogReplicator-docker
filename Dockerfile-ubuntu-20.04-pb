@@ -99,7 +99,10 @@ RUN set -eux ; \
     apt-get -y autoremove ; \
     apt-get clean ; \
     rm -rf /var/lib/apt/lists/* ; \
-    /opt/OpenLogReplicator/OpenLogReplicator --version
+    groupadd -g 1000 user1 ; \
+    useradd -u 1000 user1 -g user1 ; \
+    su - user1 /opt/OpenLogReplicator/OpenLogReplicator --version
 
+USER user1:user1
 WORKDIR /opt/OpenLogReplicator
 ENTRYPOINT ./OpenLogReplicator

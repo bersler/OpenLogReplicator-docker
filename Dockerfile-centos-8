@@ -31,10 +31,10 @@
 # -----------------------
 # Put all downloaded files in the same directory as this Dockerfile
 # Run:
-#       $ docker build -t bersler/openlogreplicator-pb:centos-7 -f Dockerfile-centos-7-pb .
+#       $ docker build -t bersler/openlogreplicator:centos-8 -f Dockerfile-centos-8 .
 #
 
-FROM centos:7 as builder
+FROM centos:8 as builder
 
 MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 
@@ -43,10 +43,9 @@ COPY instantclient-sdk-linux.x64-19.11.0.0.0dbru.zip /tmp/instantclient-sdk-linu
 
 ENV LANG en_US.UTF-8
 ENV LD_LIBRARY_PATH=/opt/instantclient_19_11:/opt/librdkafka/lib
-ENV PROTOBUF_VERSION 3.17.3
 
 RUN set -eux ; \
-    yum install -y make gcc gcc-c++ git file unzip libasan libaio-devel libnsl autoconf automake libtool wget tar ; \
+    yum install -y diffutils make gcc gcc-c++ git file unzip libasan libaio-devel libnsl autoconf automake libtool wget tar ; \
     cd /opt ; \
     unzip /tmp/instantclient-basic-linux.x64-19.11.0.0.0dbru.zip ; \
     rm /tmp/instantclient-basic-linux.x64-19.11.0.0.0dbru.zip ; \
@@ -63,15 +62,6 @@ RUN set -eux ; \
     make install ; \
     cd /opt ; \
     git clone https://github.com/Tencent/rapidjson ; \
-    mkdir -p /opt/protobuf ; \
-    mkdir -p /opt/protobuf-src ; \
-    cd /opt/protobuf-src ; \
-    wget https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOBUF_VERSION}/protobuf-cpp-${PROTOBUF_VERSION}.tar.gz ; \
-    tar xzvf protobuf-cpp-${PROTOBUF_VERSION}.tar.gz ; \
-    cd protobuf-${PROTOBUF_VERSION} ; \
-    ./configure --prefix=/opt/protobuf ; \
-    make ; \
-    make install ; \
     mkdir /opt/OpenLogReplicator ; \
     mkdir /opt/OpenLogReplicator/scripts-src ; \
     mkdir /opt/OpenLogReplicator-src ; \
@@ -79,13 +69,7 @@ RUN set -eux ; \
     git clone https://github.com/bersler/OpenLogReplicator ; \
     cd /opt/OpenLogReplicator-src/OpenLogReplicator ; \
     autoreconf -f -i ; \
-    ./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_11 --with-protobuf=/opt/protobuf ; \
-    cd proto ; \
-    export PATH=/opt/protobuf/bin:$PATH ; \
-    protoc OraProtoBuf.proto --cpp_out=. ; \
-    mv OraProtoBuf.pb.cc ../src/OraProtoBuf.pb.cpp ; \
-    mv OraProtoBuf.pb.h ../src/OraProtoBuf.pb.h ; \
-    cd .. ; \
+    ./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_11 ; \
     make ; \
     mv src/OpenLogReplicator /opt/OpenLogReplicator ; \
     mv scripts/* /opt/OpenLogReplicator/scripts-src ; \
@@ -98,7 +82,10 @@ RUN set -eux ; \
     yum -y autoremove ; \
     yum clean all ; \
     rm -rf /var/cache/yum ; \
-    /opt/OpenLogReplicator/OpenLogReplicator --version
+    groupadd -g 1000 user1 ; \
+    useradd -u 1000 user1 -g user1 ; \
+    su - user1 /opt/OpenLogReplicator/OpenLogReplicator --version
 
+USER user1:user1
 WORKDIR /opt/OpenLogReplicator
 ENTRYPOINT ./OpenLogReplicator

@@ -7,15 +7,15 @@ To create a dockerfile you must download Oracle Instant Client from Oracle:
 
 You can download the files from https://www.oracle.com/database/technologies/instant-client.html
 
-1. Compile with CentOS 7 image: bersler/openlogreplicator:centos-7
+1. Compile with CentOS 8 image: bersler/openlogreplicator:centos-8
 Place the files in the folder and run:
 
-        docker build -t bersler/openlogreplicator:centos-7 -f Dockerfile-centos-7 .
+        docker build -t bersler/openlogreplicator:centos-8 -f Dockerfile-centos-8 .
 
-2. Compile with CentOS 7 image with protobuf: bersler/openlogreplicator-pb:centos-7
+2. Compile with CentOS 8 image with protobuf: bersler/openlogreplicator-pb:centos-8
 Place the files in the folder and run:
 
-        docker build -t bersler/openlogreplicator-pb:centos-7 -f Dockerfile-centos-7-pb .
+        docker build -t bersler/openlogreplicator-pb:centos-8 -f Dockerfile-centos-8-pb .
 
 3. Compile with Ubuntu 20.04 image: bersler/openlogreplicator:ubuntu-20.04
 Place the files in the folder and run:
