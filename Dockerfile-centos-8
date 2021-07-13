@@ -83,8 +83,10 @@ RUN set -eux ; \
     yum clean all ; \
     rm -rf /var/cache/yum ; \
     groupadd -g 1000 user1 ; \
-    useradd -u 1000 user1 -g user1 ; \
-    su - user1 /opt/OpenLogReplicator/OpenLogReplicator --version
+    useradd -u 1000 user1 -g user1 -d /home/user1 ; \
+    mkdir /home/user1 ; \
+    chown -R user1:user1 /home/user1 ; \
+    su - user1 -c "export LD_LIBRARY_PATH=/opt/instantclient_19_11:/opt/librdkafka/lib; /opt/OpenLogReplicator/OpenLogReplicator --version"
 
 USER user1:user1
 WORKDIR /opt/OpenLogReplicator
