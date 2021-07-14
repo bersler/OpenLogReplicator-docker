@@ -1,6 +1,7 @@
-# Copyright (C) 2018-2021 Adam Leszczynski.
+# Dockerfile for OpenLogReplicator
+# Copyright (C) 2018-2021 Adam Leszczynski (aleszczynski@bersler.com)
 #
-# This file is part of Open Log Replicator docker template.
+# This file is part of OpenLogReplicator
 # 
 # Open Log Replicator is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as published

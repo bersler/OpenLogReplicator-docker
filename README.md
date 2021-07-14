@@ -30,7 +30,7 @@ Place the files in the folder and run:
 The script will automatically create a docker image with /opt/OpenLogReplicator. As a result you should see version banner:
 
         + ./src/OpenLogReplicator
-        2021-07-04 12:34:56 [INFO] OpenLogReplicator v.0.9.7-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
+        2021-07-15 12:34:56 [INFO] OpenLogReplicator v.0.9.15-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
 
 It means that the binary is correctly build.
 
