@@ -47,7 +47,7 @@ ENV LD_LIBRARY_PATH=/opt/instantclient_19_11:/opt/librdkafka/lib
 
 RUN set -eux ; \
     apt-get update ; \
-    apt-get -y install gcc make git file libtool g++ libaio1 unzip wget ; \
+    apt-get -y install gcc make git file libtool g++ libaio1 unzip wget libz-dev ; \
     cd /opt ; \
     unzip /tmp/instantclient-basic-linux.x64-19.11.0.0.0dbru.zip ; \
     rm /tmp/instantclient-basic-linux.x64-19.11.0.0.0dbru.zip ; \
@@ -80,13 +80,13 @@ RUN set -eux ; \
     mv LICENSE /opt/OpenLogReplicator ; \
     mv README.md /opt/OpenLogReplicator ; \
     rm -rf /opt/OpenLogReplicator-src /opt/rapidjson /opt/librdkafka-src /opt/protobuf-src ; \
-    apt-get -y remove gcc make git file libtool g++ unzip wget ; \
+    apt-get -y remove gcc make git file libtool g++ unzip wget libz-dev ; \
     apt-get -y autoremove ; \
     apt-get clean ; \
     rm -rf /var/lib/apt/lists/* ; \
     groupadd -g 1000 user1 ; \
-    useradd -u 1000 user1 -g user1 -d /home/user1 ; \
     mkdir /home/user1 ; \
+    useradd -u 1000 user1 -g user1 -d /home/user1 ; \
     chown -R user1:user1 /home/user1 ; \
     su - user1 -c "export LD_LIBRARY_PATH=/opt/instantclient_19_11:/opt/librdkafka/lib; /opt/OpenLogReplicator/OpenLogReplicator --version"
 
