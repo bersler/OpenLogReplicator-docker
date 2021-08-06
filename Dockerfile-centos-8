@@ -24,8 +24,8 @@
 # REQUIRED FILES TO BUILD THIS IMAGE
 # ----------------------------------
 #
-# (1) instantclient-basic-linux.x64-19.11.0.0.zip
-# (2) instantclient-sdk-linux.x64-19.11.0.0.zip
+# (1) instantclient-basic-linux.x64-19.12.0.0.zip
+# (2) instantclient-sdk-linux.x64-19.12.0.0.zip
 #     Download from https://www.oracle.com/database/technologies/instant-client.html
 #
 # HOW TO BUILD THIS IMAGE
@@ -39,38 +39,48 @@ FROM centos:8 as builder
 
 MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 
-COPY instantclient-basic-linux.x64-19.11.0.0.0dbru.zip /tmp/instantclient-basic-linux.x64-19.11.0.0.0dbru.zip
-COPY instantclient-sdk-linux.x64-19.11.0.0.0dbru.zip /tmp/instantclient-sdk-linux.x64-19.11.0.0.0dbru.zip
-
 ENV LANG en_US.UTF-8
-ENV LD_LIBRARY_PATH=/opt/instantclient_19_11:/opt/librdkafka/lib
+ENV ORACLE_MAJOR 19
+ENV ORACLE_MINOR 12
+ENV RAPIDJSON_VERSION 1.1.0
+ENV LIBRDKAFKA_VERSION 1.7.0
+ENV OPENLOGREPLICATOR_VERSION 0.9.19-beta
+ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib
+
+COPY instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip /tmp/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip
+COPY instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip /tmp/instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip
 
 RUN set -eux ; \
-    yum install -y diffutils make gcc gcc-c++ git file unzip libasan libaio libaio-devel zlib-devel libnsl autoconf automake libtool wget tar ; \
+    yum install -y diffutils make gcc gcc-c++ file unzip libasan libaio libaio-devel libnsl autoconf automake libtool wget tar ; \
     cd /opt ; \
-    unzip /tmp/instantclient-basic-linux.x64-19.11.0.0.0dbru.zip ; \
-    rm /tmp/instantclient-basic-linux.x64-19.11.0.0.0dbru.zip ; \
-    unzip /tmp/instantclient-sdk-linux.x64-19.11.0.0.0dbru.zip ; \
-    rm /tmp/instantclient-sdk-linux.x64-19.11.0.0.0dbru.zip ; \
-    cd /opt/instantclient_19_11 ; \
-    ln -s libclntshcore.so.19.1 libclntshcore.so ; \
-    mkdir /opt/librdkafka-src ; \
-    cd /opt/librdkafka-src ; \
-    git clone https://github.com/edenhill/librdkafka ; \
-    cd librdkafka ; \
+    unzip /tmp/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
+    rm /tmp/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
+    unzip /tmp/instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
+    rm /tmp/instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
+    cd /opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR} ; \
+    ln -s libclntshcore.so.${ORACLE_MAJOR}.1 libclntshcore.so ; \
+    cd /opt ; \
+    wget https://github.com/edenhill/librdkafka/archive/refs/tags/v${LIBRDKAFKA_VERSION}.tar.gz ; \
+    tar xzvf v${LIBRDKAFKA_VERSION}.tar.gz ; \
+    rm v${LIBRDKAFKA_VERSION}.tar.gz ; \
+    cd /opt/librdkafka-${LIBRDKAFKA_VERSION} ; \
     ./configure --prefix=/opt/librdkafka ; \
     make ; \
     make install ; \
     cd /opt ; \
-    git clone https://github.com/Tencent/rapidjson ; \
+    wget https://github.com/Tencent/rapidjson/archive/refs/tags/v${RAPIDJSON_VERSION}.tar.gz ; \
+    tar xzvf v${RAPIDJSON_VERSION}.tar.gz ; \
+    rm v${RAPIDJSON_VERSION}.tar.gz ; \
+    ln -s rapidjson-${RAPIDJSON_VERSION} rapidjson ; \
+    cd /opt ; \
     mkdir /opt/OpenLogReplicator ; \
     mkdir /opt/OpenLogReplicator/scripts-src ; \
-    mkdir /opt/OpenLogReplicator-src ; \
-    cd /opt/OpenLogReplicator-src ; \
-    git clone https://github.com/bersler/OpenLogReplicator ; \
-    cd /opt/OpenLogReplicator-src/OpenLogReplicator ; \
+    wget https://github.com/bersler/OpenLogReplicator/archive/refs/tags/${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+    tar xzvf ${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+    rm ${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+    cd /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} ; \
     autoreconf -f -i ; \
-    ./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_19_11 ; \
+    ./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR} ; \
     make ; \
     mv src/OpenLogReplicator /opt/OpenLogReplicator ; \
     mv scripts/* /opt/OpenLogReplicator/scripts-src ; \
@@ -78,8 +88,8 @@ RUN set -eux ; \
     mv CHANGELOG /opt/OpenLogReplicator ; \
     mv LICENSE /opt/OpenLogReplicator ; \
     mv README.md /opt/OpenLogReplicator ; \
-    rm -rf /opt/OpenLogReplicator-src /opt/rapidjson /opt/librdkafka-src /opt/protobuf-src ; \
-    yum -y remove make gcc gcc-c++ git file unzip libaio-devel zlib-devel autoconf automake libtool wget ; \
+    rm -rf /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} /opt/rapidjson /opt/rapidjson-${RAPIDJSON_VERSION} /opt/librdkafka-${LIBRDKAFKA_VERSION} ; \
+    yum -y remove make gcc gcc-c++ file unzip libaio-devel zlib-devel autoconf automake libtool wget ; \
     yum -y autoremove ; \
     yum clean all ; \
     rm -rf /var/cache/yum ; \
@@ -87,7 +97,7 @@ RUN set -eux ; \
     mkdir /home/user1 ; \
     useradd -u 1000 user1 -g user1 -d /home/user1 ; \
     chown -R user1:user1 /home/user1 ; \
-    su - user1 -c "export LD_LIBRARY_PATH=/opt/instantclient_19_11:/opt/librdkafka/lib; /opt/OpenLogReplicator/OpenLogReplicator --version"
+    su - user1 -c "export LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib; /opt/OpenLogReplicator/OpenLogReplicator --version"
 
 USER user1:user1
 WORKDIR /opt/OpenLogReplicator
