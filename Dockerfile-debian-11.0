@@ -32,10 +32,10 @@
 # -----------------------
 # Put all downloaded files in the same directory as this Dockerfile
 # Run:
-#       $ docker build -t bersler/openlogreplicator:centos-8 -f Dockerfile-centos-8 --build-arg GID=1000 --build-arg UID=1000 .
+#       $ docker build -t bersler/openlogreplicator:ubuntu-20.04 -f Dockerfile-ubuntu-20.04 --build-arg GID=1000 --build-arg UID=1000 .
 #
 
-FROM centos:8 as builder
+FROM debian:11.0 as builder
 ARG GID=1000
 ARG UID=1000
 
@@ -54,7 +54,8 @@ COPY instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip
 COPY instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip /tmp/instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip
 
 RUN set -eux ; \
-    yum install -y diffutils make gcc gcc-c++ file unzip libasan libaio libaio-devel libnsl autoconf automake libtool wget tar ; \
+    apt-get update ; \
+    apt-get -y install gcc make file libtool g++ libaio1 unzip wget libz-dev ; \
     cd /opt ; \
     unzip /tmp/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
     rm /tmp/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
@@ -92,10 +93,10 @@ RUN set -eux ; \
     mv LICENSE /opt/OpenLogReplicator ; \
     mv README.md /opt/OpenLogReplicator ; \
     rm -rf /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} /opt/rapidjson /opt/rapidjson-${RAPIDJSON_VERSION} /opt/librdkafka-${LIBRDKAFKA_VERSION} ; \
-    yum -y remove make gcc gcc-c++ file unzip libaio-devel zlib-devel autoconf automake libtool wget ; \
-    yum -y autoremove ; \
-    yum clean all ; \
-    rm -rf /var/cache/yum ; \
+    apt-get -y remove gcc make file libtool g++ unzip wget libz-dev ; \
+    apt-get -y autoremove ; \
+    apt-get clean ; \
+    rm -rf /var/lib/apt/lists/* ; \
     groupadd -g $GID user1 ; \
     mkdir /home/user1 ; \
     useradd -u $UID user1 -g user1 -d /home/user1 ; \

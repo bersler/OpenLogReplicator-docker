@@ -32,13 +32,16 @@
 # -----------------------
 # Put all downloaded files in the same directory as this Dockerfile
 # Run:
-#       $ docker build -t bersler/openlogreplicator:ubuntu-20.04 -f Dockerfile-ubuntu-20.04 .
+#       $ docker build -t bersler/openlogreplicator:ubuntu-20.04 -f Dockerfile-ubuntu-20.04 --build-arg GID=1000 --build-arg UID=1000 .
 #
 
 FROM ubuntu:20.04 as builder
+ARG GID=1000
+ARG UID=1000
 
 MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 
+ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
 ENV ORACLE_MINOR 12
@@ -94,9 +97,9 @@ RUN set -eux ; \
     apt-get -y autoremove ; \
     apt-get clean ; \
     rm -rf /var/lib/apt/lists/* ; \
-    groupadd -g 1000 user1 ; \
+    groupadd -g $GID user1 ; \
     mkdir /home/user1 ; \
-    useradd -u 1000 user1 -g user1 -d /home/user1 ; \
+    useradd -u $UID user1 -g user1 -d /home/user1 ; \
     chown -R user1:user1 /home/user1 ; \
     su - user1 -c "export LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib; /opt/OpenLogReplicator/OpenLogReplicator --version"
 

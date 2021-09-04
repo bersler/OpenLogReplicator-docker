@@ -32,10 +32,10 @@
 # -----------------------
 # Put all downloaded files in the same directory as this Dockerfile
 # Run:
-#       $ docker build -t bersler/openlogreplicator:centos-8 -f Dockerfile-centos-8 --build-arg GID=1000 --build-arg UID=1000 .
+#       $ docker build -t bersler/openlogreplicator-pb:ubuntu-20.04 -f Dockerfile-ubuntu-20.04-pb --build-arg GID=1000 --build-arg UID=1000 .
 #
 
-FROM centos:8 as builder
+FROM debian:11.0 as builder
 ARG GID=1000
 ARG UID=1000
 
@@ -45,6 +45,7 @@ ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
 ENV ORACLE_MINOR 12
+ENV PROTOBUF_VERSION 3.17.3
 ENV RAPIDJSON_VERSION 1.1.0
 ENV LIBRDKAFKA_VERSION 1.7.0
 ENV OPENLOGREPLICATOR_VERSION 0.9.24-beta
@@ -54,7 +55,8 @@ COPY instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip
 COPY instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip /tmp/instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip
 
 RUN set -eux ; \
-    yum install -y diffutils make gcc gcc-c++ file unzip libasan libaio libaio-devel libnsl autoconf automake libtool wget tar ; \
+    apt-get update ; \
+    apt-get -y install gcc make file libtool g++ libaio1 unzip wget libz-dev ; \
     cd /opt ; \
     unzip /tmp/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
     rm /tmp/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
@@ -76,6 +78,14 @@ RUN set -eux ; \
     rm v${RAPIDJSON_VERSION}.tar.gz ; \
     ln -s rapidjson-${RAPIDJSON_VERSION} rapidjson ; \
     cd /opt ; \
+    wget https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOBUF_VERSION}/protobuf-cpp-${PROTOBUF_VERSION}.tar.gz ; \
+    tar xzvf protobuf-cpp-${PROTOBUF_VERSION}.tar.gz ; \
+    rm protobuf-cpp-${PROTOBUF_VERSION}.tar.gz ; \
+    cd /opt/protobuf-${PROTOBUF_VERSION} ; \
+    ./configure --prefix=/opt/protobuf ; \
+    make ; \
+    make install ; \
+    cd /opt ; \
     mkdir /opt/OpenLogReplicator ; \
     mkdir /opt/OpenLogReplicator/scripts-src ; \
     wget https://github.com/bersler/OpenLogReplicator/archive/refs/tags/${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
@@ -83,7 +93,13 @@ RUN set -eux ; \
     rm ${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
     cd /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} ; \
     autoreconf -f -i ; \
-    ./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR} ; \
+    ./configure CXXFLAGS='-O3' --with-rapidjson=/opt/rapidjson --with-rdkafka=/opt/librdkafka --with-instantclient=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR} --with-protobuf=/opt/protobuf ; \
+    cd proto ; \
+    export PATH=/opt/protobuf/bin:$PATH ; \
+    protoc OraProtoBuf.proto --cpp_out=. ; \
+    mv OraProtoBuf.pb.cc ../src/OraProtoBuf.pb.cpp ; \
+    mv OraProtoBuf.pb.h ../src/OraProtoBuf.pb.h ; \
+    cd .. ; \
     make ; \
     mv src/OpenLogReplicator /opt/OpenLogReplicator ; \
     mv scripts/* /opt/OpenLogReplicator/scripts-src ; \
@@ -91,11 +107,11 @@ RUN set -eux ; \
     mv CHANGELOG /opt/OpenLogReplicator ; \
     mv LICENSE /opt/OpenLogReplicator ; \
     mv README.md /opt/OpenLogReplicator ; \
-    rm -rf /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} /opt/rapidjson /opt/rapidjson-${RAPIDJSON_VERSION} /opt/librdkafka-${LIBRDKAFKA_VERSION} ; \
-    yum -y remove make gcc gcc-c++ file unzip libaio-devel zlib-devel autoconf automake libtool wget ; \
-    yum -y autoremove ; \
-    yum clean all ; \
-    rm -rf /var/cache/yum ; \
+    rm -rf /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} /opt/rapidjson /opt/rapidjson-${RAPIDJSON_VERSION} /opt/librdkafka-${LIBRDKAFKA_VERSION} /opt/protobuf-${PROTOBUF_VERSION} ; \
+    apt-get -y remove gcc make file libtool g++ unzip wget libz-dev ; \
+    apt-get -y autoremove ; \
+    apt-get clean ; \
+    rm -rf /var/lib/apt/lists/* ; \
     groupadd -g $GID user1 ; \
     mkdir /home/user1 ; \
     useradd -u $UID user1 -g user1 -d /home/user1 ; \

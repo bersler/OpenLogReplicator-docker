@@ -18,7 +18,12 @@
 # along with Open Log Replicator; see the file LICENSE.txt  If not see
 # <http://www.gnu.org/licenses/>.
 
-docker build -t bersler/openlogreplicator:ubuntu-20.04 -f Dockerfile-ubuntu-20.04 .
-docker build -t bersler/openlogreplicator:centos-8 -f Dockerfile-centos-8 .
-docker build -t bersler/openlogreplicator-pb:ubuntu-20.04 -f Dockerfile-ubuntu-20.04-pb .
-docker build -t bersler/openlogreplicator-pb:centos-8 -f Dockerfile-centos-8-pb .
+USER=`whoami`
+GID=`id -r -g ${USER}`
+UID=`id -r -u ${USER}`
+#docker build -t bersler/openlogreplicator:centos-8 -f Dockerfile-centos-8 --build-arg GID=${GID} --build-arg UID=${UID} .
+docker build -t bersler/openlogreplicator:debian-11.0 -f Dockerfile-debian-11.0 --build-arg GID=${GID} --build-arg UID=${UID} .
+#docker build -t bersler/openlogreplicator:ubuntu-20.04 -f Dockerfile-ubuntu-20.04 --build-arg GID=${GID} --build-arg UID=${UID} .
+#docker build -t bersler/openlogreplicator-pb:centos-8 -f Dockerfile-centos-8-pb --build-arg GID=${GID} --build-arg UID=${UID} .
+docker build -t bersler/openlogreplicator-pb:debian-11.0 -f Dockerfile-debian-11.0-pb --build-arg GID=${GID} --build-arg UID=${UID} .
+#docker build -t bersler/openlogreplicator-pb:ubuntu-20.04 -f Dockerfile-ubuntu-20.04-pb --build-arg GID=${GID} --build-arg UID=${UID} .
