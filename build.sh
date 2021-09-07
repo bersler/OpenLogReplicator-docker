@@ -19,11 +19,12 @@
 # <http://www.gnu.org/licenses/>.
 
 USER=`whoami`
-GID=`id -r -g ${USER}`
-UID=`id -r -u ${USER}`
-#docker build -t bersler/openlogreplicator:centos-8 -f Dockerfile-centos-8 --build-arg GID=${GID} --build-arg UID=${UID} .
-docker build -t bersler/openlogreplicator:debian-11.0 -f Dockerfile-debian-11.0 --build-arg GID=${GID} --build-arg UID=${UID} .
-#docker build -t bersler/openlogreplicator:ubuntu-20.04 -f Dockerfile-ubuntu-20.04 --build-arg GID=${GID} --build-arg UID=${UID} .
-#docker build -t bersler/openlogreplicator-pb:centos-8 -f Dockerfile-centos-8-pb --build-arg GID=${GID} --build-arg UID=${UID} .
-docker build -t bersler/openlogreplicator-pb:debian-11.0 -f Dockerfile-debian-11.0-pb --build-arg GID=${GID} --build-arg UID=${UID} .
-#docker build -t bersler/openlogreplicator-pb:ubuntu-20.04 -f Dockerfile-ubuntu-20.04-pb --build-arg GID=${GID} --build-arg UID=${UID} .
+GIDOLR=`id -r -g ${USER}`
+UIDOLR=`id -r -u ${USER}`
+GIDORA=1000
+docker build -t bersler/openlogreplicator:centos-8 -f Dockerfile-centos-8 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} .
+docker build -t bersler/openlogreplicator:debian-11.0 -f Dockerfile-debian-11.0 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} .
+docker build -t bersler/openlogreplicator:ubuntu-20.04 -f Dockerfile-ubuntu-20.04 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} .
+docker build -t bersler/openlogreplicator-pb:centos-8 -f Dockerfile-centos-8-pb --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} .
+docker build -t bersler/openlogreplicator-pb:debian-11.0 -f Dockerfile-debian-11.0-pb --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} .
+docker build -t bersler/openlogreplicator-pb:ubuntu-20.04 -f Dockerfile-ubuntu-20.04-pb --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} .
