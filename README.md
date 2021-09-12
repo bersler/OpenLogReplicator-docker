@@ -41,7 +41,7 @@ Place the files in the folder and run:
 The script will automatically create a docker image with /opt/OpenLogReplicator. As a result you should see version banner:
 
         + ./src/OpenLogReplicator
-        2021-09-04 12:34:56 [INFO] OpenLogReplicator v.0.9.25-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
+        2021-09-12 12:34:56 [INFO] OpenLogReplicator v.0.9.26-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
 
 It means that the binary is correctly build. You can provide custom GID/UID - which is used to run OpenLogReplicator. The group/user would be used by docker image to run the OpenLogReplicator process. Please choose the group/user that would have appropriate privileges to access files (write checkpoint files and read redo log files).
 
