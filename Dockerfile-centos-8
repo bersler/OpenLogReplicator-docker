@@ -47,7 +47,7 @@ ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
 ENV ORACLE_MINOR 12
 ENV RAPIDJSON_VERSION 1.1.0
-ENV LIBRDKAFKA_VERSION 1.7.0
+ENV LIBRDKAFKA_VERSION 1.8.0
 ENV OPENLOGREPLICATOR_VERSION 0.9.26-beta
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib
 
@@ -99,7 +99,7 @@ RUN set -eux ; \
     rm -rf /var/cache/yum ; \
     mkdir /home/user1 ; \
     groupadd -g $GIDOLR user1 ; \
-    if [ $GIDOLR != $GIDORA ]; then useradd -u $UIDOLR user1 -g user1 -G oracle -d /home/user1; else useradd -u $UIDOLR user1 -g user1 -d /home/user1; fi ; \
+    if [ $GIDOLR != $GIDORA ]; then groupadd -g $GIDORA oracle; useradd -u $UIDOLR user1 -g user1 -G oracle -d /home/user1; else useradd -u $UIDOLR user1 -g user1 -d /home/user1; fi ; \
     chown -R user1:user1 /home/user1 ; \
     su - user1 -c "export LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib; /opt/OpenLogReplicator/OpenLogReplicator --version"
 
