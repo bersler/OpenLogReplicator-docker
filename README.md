@@ -1,12 +1,6 @@
 # OpenLogReplicator-docker
 Dockerfile for OpenLogReplicator
 
-To create a dockerfile you must download Oracle Instant Client from Oracle:
-1. instantclient-basic-linux.x64-19.12.0.0.0dbru.zip
-2. instantclient-sdk-linux.x64-19.12.0.0.0dbru.zip
-
-You can download the files from https://www.oracle.com/database/technologies/instant-client.html
-
 You can compile with CentOS, Debian or Ubuntu image: bersler/openlogreplicator
 
 Please refer to build.sh for reference how to run docker build command.
