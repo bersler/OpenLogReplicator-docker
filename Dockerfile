@@ -1,5 +1,5 @@
 # Dockerfile for OpenLogReplicator
-# Copyright (C) 2018-2021 Adam Leszczynski (aleszczynski@bersler.com)
+# Copyright (C) 2018-2022 Adam Leszczynski (aleszczynski@bersler.com)
 #
 # This file is part of OpenLogReplicator
 # 
@@ -51,7 +51,7 @@ ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
 ENV ORACLE_MINOR 13
-ENV PROTOBUF_VERSION 3.19.1
+ENV PROTOBUF_VERSION 3.19.2
 ENV RAPIDJSON_VERSION 1.1.0
 ENV LIBRDKAFKA_VERSION 1.8.2
 ENV ROCKETMQ_VERSION 2.2.0
@@ -192,7 +192,7 @@ RUN set -eu ; \
         fi ; \
     fi
 
-USER user1:user1
+USER user1:oracle
 RUN set -eu ; \
     export LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/rocketmq-client-cpp/bin; \
     /opt/OpenLogReplicator/OpenLogReplicator --version
