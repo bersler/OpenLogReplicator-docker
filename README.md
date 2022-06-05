@@ -1,7 +1,7 @@
 # OpenLogReplicator-docker
 Dockerfile for OpenLogReplicator
 
-You can compile with CentOS, Debian or Ubuntu image: bersler/openlogreplicator
+You can compile with Debian or Ubuntu image: bersler/openlogreplicator
 
 Please refer to build.sh for reference how to run docker build command.
 
