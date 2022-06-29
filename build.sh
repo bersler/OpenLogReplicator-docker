@@ -21,7 +21,7 @@
 USER=`whoami`
 GIDOLR=`id -r -g ${USER}`
 UIDOLR=`id -r -u ${USER}`
-GIDORA=1000
+GIDORA=54322
 
 #dev
 docker build -t bersler/openlogreplicator:debian-11.0-dev -f Dockerfile --build-arg IMAGE=debian --build-arg VERSION=11.0 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Debug .

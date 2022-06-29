@@ -33,7 +33,7 @@ ARG IMAGE=debian
 ARG VERSION=11.0
 FROM ${IMAGE}:${VERSION} as builder
 
-ARG OPENLOGREPLICATOR_VERSION=0.9.43
+ARG OPENLOGREPLICATOR_VERSION=0.9.44
 ARG GIDOLR=1001
 ARG UIDOLR=1001
 ARG GIDORA=54322
@@ -49,10 +49,10 @@ ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
 ENV ORACLE_MINOR 15
-ENV PROTOBUF_VERSION_DIR 21.1
-ENV PROTOBUF_VERSION 3.21.1
+ENV PROTOBUF_VERSION_DIR 21.2
+ENV PROTOBUF_VERSION 3.21.2
 ENV RAPIDJSON_VERSION 1.1.0
-ENV LIBRDKAFKA_VERSION 1.8.2
+ENV LIBRDKAFKA_VERSION 1.9.0
 ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib
 ENV BUILDARGS="-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWITH_RAPIDJSON=/opt/rapidjson -S ../ -B ./"
@@ -116,11 +116,13 @@ RUN set -eu ; \
     cd /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} ; \
     if [ "${COMPILEPROTOBUF}" != "" ]; then \
         cd proto ; \
-        /opt/protobuf/bin/protoc OraProtoBuf.proto --cpp_out=../src/common ; \
+        /opt/protobuf/bin/protoc OraProtoBuf.proto --cpp_out=. ; \
+        mv OraProtoBuf.pb.cc ../src/common/OraProtoBuf.pb.cpp ; \
+        mv OraProtoBuf.pb.h ../src/common/OraProtoBuf.pb.h ; \
         cd .. ; \
     fi ; \
-    mkdir cmake-build-debug-x86_64 ; \
-    cd cmake-build-debug-x86_64 ; \
+    mkdir cmake-build-${BUILD_TYPE,,}-x86_64 ; \
+    cd cmake-build-${BUILD_TYPE,,}-x86_64 ; \
     cmake ${BUILDARGS} ; \
     cmake --build ./ --target OpenLogReplicator -j ; \
     mkdir /opt/OpenLogReplicator ; \
