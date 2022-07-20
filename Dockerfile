@@ -121,8 +121,8 @@ RUN set -eu ; \
         mv OraProtoBuf.pb.h ../src/common/OraProtoBuf.pb.h ; \
         cd .. ; \
     fi ; \
-    mkdir cmake-build-${BUILD_TYPE,,}-x86_64 ; \
-    cd cmake-build-${BUILD_TYPE,,}-x86_64 ; \
+    mkdir cmake-build-${BUILD_TYPE}-x86_64 ; \
+    cd cmake-build-${BUILD_TYPE}-x86_64 ; \
     cmake ${BUILDARGS} ; \
     cmake --build ./ --target OpenLogReplicator -j ; \
     mkdir /opt/OpenLogReplicator ; \
