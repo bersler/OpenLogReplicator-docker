@@ -8,7 +8,7 @@ Please refer to build.sh for reference how to run docker build command.
 The script will automatically create a docker image with /opt/OpenLogReplicator. As a result you should see version banner:
 
         + ./src/OpenLogReplicator
-        2021-09-12 12:34:56 [INFO] OpenLogReplicator v.0.9.30-beta (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
+        2022-12-10 23:59:56 [INFO] OpenLogReplicator v.1.0.0 (C) 2018-2021 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
 
 It means that the binary is correctly build. You can provide custom GID/UID - which is used to run OpenLogReplicator. The group/user would be used by docker image to run the OpenLogReplicator process. Please choose the group/user that would have appropriate privileges to access files (write checkpoint files and read redo log files).
 
@@ -21,4 +21,4 @@ It means that the binary is correctly build. You can provide custom GID/UID - wh
         docker run --name OpenLogReplicator -v /opt/fast-recovery-area:/opt/fast-recovery-area \
         -v ./scripts:/opt/OpenLogReplicator/scripts \
         -v ./checkpoint:/opt/OpenLogReplicator/checkpoint \
-        bersler/openlogreplicator:ubuntu-20.04
+        bersler/openlogreplicator:debian-11.0
