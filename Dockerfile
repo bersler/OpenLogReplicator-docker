@@ -111,9 +111,9 @@ RUN set -eu ; \
         make install ; \
     fi ; \
     cd /opt ; \
-    wget https://github.com/bersler/OpenLogReplicator/archive/refs/tags/${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
-    tar xzvf ${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
-    rm ${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+    wget https://github.com/bersler/OpenLogReplicator/archive/refs/tags/v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+    tar xzvf v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+    rm v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
     cd /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} ; \
     if [ "${COMPILEPROTOBUF}" != "" ]; then \
         cd proto ; \
