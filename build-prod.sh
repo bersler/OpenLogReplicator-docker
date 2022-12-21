@@ -19,9 +19,9 @@
 # <http://www.gnu.org/licenses/>.
 
 USER=`whoami`
-GIDOLR=`id -r -g ${USER}`
-UIDOLR=`id -r -u ${USER}`
-GIDORA=54322
+GIDOLR=${GIDOLR:=`id -r -g ${USER}`}
+UIDOLR=${UIDOLR:=`id -r -u ${USER}`}
+GIDORA=${GIDORA:=54322}
 
 if [ "$GIDOLR" -eq "0" ] || [ "$UIDOLR" -eq "0" ]; then
     echo "Failed, you are not allowed to run OpenLogReplicator as root"
