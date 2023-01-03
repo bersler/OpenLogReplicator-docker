@@ -22,3 +22,9 @@ It means that the binary is correctly build. You can provide custom GID/UID - wh
         -v ./scripts:/opt/OpenLogReplicator/scripts \
         -v ./checkpoint:/opt/OpenLogReplicator/checkpoint \
         bersler/openlogreplicator:debian-11.0
+
+## Sponsoring the Project
+
+If you (or your company) are benefiting from the project and would like to support the contributor, kindly support the project.
+
+<a href="https://www.buymeacoffee.com/bersler" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 160px !important;" ></a>
