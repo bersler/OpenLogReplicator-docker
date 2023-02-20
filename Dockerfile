@@ -33,7 +33,7 @@ ARG IMAGE=debian
 ARG VERSION=11.0
 FROM ${IMAGE}:${VERSION} as builder
 
-ARG OPENLOGREPLICATOR_VERSION=1.0.0
+ARG OPENLOGREPLICATOR_VERSION=1.0.1
 ARG ARCH=x86_64
 ARG GIDOLR=1001
 ARG UIDOLR=1001
@@ -49,10 +49,13 @@ MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
-ENV ORACLE_MINOR 17
+ENV ORACLE_MINOR 18
+# latest is 22.0
 ENV PROTOBUF_VERSION_DIR 21.12
+# latest is 3.22.0
 ENV PROTOBUF_VERSION 3.21.12
 ENV RAPIDJSON_VERSION 1.1.0
+# latest is 2.0.2
 ENV LIBRDKAFKA_VERSION 1.9.2
 ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib
@@ -65,6 +68,8 @@ ENV COMPILEORACLE="${WITHORACLE:+1}"
 ENV COMPILEPROTOBUF="${WITHPROTOBUF:+1}"
 ENV TZ=${TZ:-Europe/Warsaw}
 ENV DEBIAN_FRONTEND=noninteractive
+
+COPY run.sh /opt
 
 RUN set -eu ; \
     if [ -r /etc/centos-release ]; then \
@@ -168,4 +173,4 @@ RUN set -eu ; \
     /opt/OpenLogReplicator/OpenLogReplicator --version
 
 WORKDIR /opt/OpenLogReplicator
-ENTRYPOINT ./OpenLogReplicator >>/opt/OpenLogReplicator/log/OpenLogReplicator.txt 2>>/opt/OpenLogReplicator/log/OpenLogReplicator.err
+ENTRYPOINT /opt/run.sh
