@@ -24,7 +24,7 @@ UIDOLR=${UIDOLR:=`id -r -u ${USER}`}
 GIDORA=${GIDORA:=54322}
 BASE_IMAGE=${BASE_IMAGE:=debian}
 BASE_VERSION=${BASE_VERSION:=11.0}
-TAG=${TAG:=bersler/openlogreplicator:${BASE_IMAGE}-${BASE_VERSION}-dev}
+TAG=${TAG:=bersler/openlogreplicator:${BASE_IMAGE}-${BASE_VERSION}}
 
 if [ "$GIDOLR" -eq "0" ] || [ "$UIDOLR" -eq "0" ]; then
     echo "Failed, you are not allowed to run OpenLogReplicator as root"
