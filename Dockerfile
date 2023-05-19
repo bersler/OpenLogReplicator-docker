@@ -50,13 +50,14 @@ ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
 ENV ORACLE_MINOR 18
-# latest is 22.2
+# latest is 23.1
 ENV PROTOBUF_VERSION_DIR 21.12
-# latest is 3.22.2
+# latest is 3.23.1
 ENV PROTOBUF_VERSION 3.21.12
 ENV RAPIDJSON_VERSION 1.1.0
 # latest is 2.0.2
 ENV LIBRDKAFKA_VERSION 1.9.2
+# latest is 2.1.1
 ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib
 ENV BUILDARGS="-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWITH_RAPIDJSON=/opt/rapidjson -S ../ -B ./"
@@ -116,9 +117,14 @@ RUN set -eu ; \
         make install ; \
     fi ; \
     cd /opt ; \
-    wget https://github.com/bersler/OpenLogReplicator/archive/refs/tags/v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
-    tar xzvf v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
-    rm v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+    if [ "${OPENLOGREPLICATOR_VERSION}" != "master" ]; then \
+        wget https://github.com/bersler/OpenLogReplicator/archive/refs/tags/v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+        tar xzvf v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+        rm v${OPENLOGREPLICATOR_VERSION}.tar.gz ; \
+    else \
+        git clone https://github.com/bersler/OpenLogReplicator ; \
+        mv OpenLogReplicator OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} ; \
+    fi ; \
     cd /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION} ; \
     if [ "${COMPILEPROTOBUF}" != "" ]; then \
         cd proto ; \

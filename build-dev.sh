@@ -25,10 +25,26 @@ GIDORA=${GIDORA:=54322}
 BASE_IMAGE=${BASE_IMAGE:=debian}
 BASE_VERSION=${BASE_VERSION:=11.0}
 TAG=${TAG:=bersler/openlogreplicator:${BASE_IMAGE}-${BASE_VERSION}-dev}
+BUILD_ARGS=""
 
 if [ "$GIDOLR" -eq "0" ] || [ "$UIDOLR" -eq "0" ]; then
     echo "Failed, you are not allowed to run OpenLogReplicator as root"
     exit 1
 fi
 
-docker build -t ${TAG} -f Dockerfile --build-arg IMAGE=${BASE_IMAGE} --build-arg VERSION=${BASE_VERSION} --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Debug .
+if [ -z "${OPENLOGREPLICATOR_VERSION}" ]; then
+    BUILD_ARGS="--build-arg OPENLOGREPLICATOR_VERSION=${OPENLOGREPLICATOR_VERSION}"
+fi
+
+docker build \
+-t ${TAG} \
+-f Dockerfile \
+${BUILD_ARGS} \
+--build-arg IMAGE=${BASE_IMAGE} \
+--build-arg VERSION=${BASE_VERSION} \
+--build-arg GIDOLR=${GIDOLR} \
+--build-arg UIDOLR=${UIDOLR} \
+--build-arg GIDORA=${GIDORA} \
+--build-arg WITHORACLE=1 \
+--build-arg WITHPROTOBUF=1 \
+--build-arg BUILD_TYPE=Debug .
