@@ -32,7 +32,7 @@ if [ "$GIDOLR" -eq "0" ] || [ "$UIDOLR" -eq "0" ]; then
     exit 1
 fi
 
-if [ -z "${OPENLOGREPLICATOR_VERSION}" ]; then
+if [ ! -z "${OPENLOGREPLICATOR_VERSION}" ]; then
     BUILD_ARGS="--build-arg OPENLOGREPLICATOR_VERSION=${OPENLOGREPLICATOR_VERSION}"
 fi
 
