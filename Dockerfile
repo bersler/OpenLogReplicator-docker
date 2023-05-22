@@ -74,11 +74,11 @@ COPY run.sh /opt
 
 RUN set -eu ; \
     if [ -r /etc/centos-release ]; then \
-        yum -y install autoconf automake diffutils file gcc gcc-c++ libaio libaio-devel libasan libnsl libtool make patch tar unzip wget zlib-devel ; \
+        yum -y install autoconf automake diffutils file gcc gcc-c++ libaio libaio-devel libasan libnsl libtool make patch tar unzip wget zlib-devel git ; \
     fi ; \
     if [ -r /etc/debian_version ]; then \
         apt-get update ; \
-        apt-get -y install file gcc g++ libaio1 libasan5 libasan6 libtool libz-dev make patch unzip wget cmake ; \
+        apt-get -y install file gcc g++ libaio1 libasan5 libasan6 libtool libz-dev make patch unzip wget cmake git ; \
     fi ; \
     cd /opt ; \
     wget https://github.com/Tencent/rapidjson/archive/refs/tags/v${RAPIDJSON_VERSION}.tar.gz ; \
