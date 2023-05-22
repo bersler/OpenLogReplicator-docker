@@ -160,13 +160,13 @@ RUN set -eu ; \
             rm -rf /opt/protobuf-${PROTOBUF_VERSION} ; \
         fi ; \
         if [ -r /etc/centos-release ]; then \
-            yum -y remove autoconf automake file gcc gcc-c++ libaio-devel libtool make patch unzip wget zlib-devel ; \
+            yum -y remove autoconf automake file gcc gcc-c++ libaio-devel libtool make patch unzip wget zlib-devel git ; \
             yum -y autoremove ; \
             yum clean all ; \
         rm -rf /var/cache/yum ; \
         fi ; \
         if [ -r /etc/debian_version ]; then \
-            apt-get -y remove file gcc g++ libtool libz-dev make unzip wget ; \
+            apt-get -y remove file gcc g++ libtool libz-dev make unzip wget git ; \
             apt-get -y autoremove ; \
             apt-get clean ; \
             rm -rf /var/lib/apt/lists/* ; \
