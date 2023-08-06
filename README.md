@@ -25,7 +25,7 @@ Example:
     docker run --name OpenLogReplicator -v /opt/fast-recovery-area:/opt/fast-recovery-area \
     -v ./scripts:/opt/OpenLogReplicator/scripts \
     -v ./checkpoint:/opt/OpenLogReplicator/checkpoint \
-    bersler/openlogreplicator:debian-11.0
+    bersler/openlogreplicator:debian-12.0
 
 ## Sponsoring the Project
 

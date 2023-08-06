@@ -25,12 +25,12 @@
 # -----------------------
 # Put all downloaded files in the same directory as this Dockerfile
 # Run:
-#       $ docker build -t bersler/openlogreplicator:debian-11.0 -f Dockerfile --build-arg IMAGE=debian --build-arg VERSION=11.0 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
+#       $ docker build -t bersler/openlogreplicator:debian-12.0 -f Dockerfile --build-arg IMAGE=debian --build-arg VERSION=12.0 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
 #       $ docker build -t bersler/openlogreplicator:ubuntu-22.04 -f Dockerfile --build-arg IMAGE=ubuntu --build-arg VERSION=22.04 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
 #
 
 ARG IMAGE=debian
-ARG VERSION=11.0
+ARG VERSION=12.0
 FROM ${IMAGE}:${VERSION} as builder
 
 ARG OPENLOGREPLICATOR_VERSION=1.2.0
@@ -50,14 +50,12 @@ ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
 ENV ORACLE_MINOR 18
-# latest is 23.2
+# latest is 23.4
 ENV PROTOBUF_VERSION_DIR 21.12
-# latest is 3.23.2
+# latest is 3.23.4
 ENV PROTOBUF_VERSION 3.21.12
 ENV RAPIDJSON_VERSION 1.1.0
-# latest is 2.0.2
-ENV LIBRDKAFKA_VERSION 1.9.2
-# latest is 2.1.1
+ENV LIBRDKAFKA_VERSION 2.2.0
 ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib
 ENV BUILDARGS="-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWITH_RAPIDJSON=/opt/rapidjson -S ../ -B ./"
@@ -78,7 +76,7 @@ RUN set -eu ; \
     fi ; \
     if [ -r /etc/debian_version ]; then \
         apt-get update ; \
-        apt-get -y install file gcc g++ libaio1 libasan5 libasan6 libtool libz-dev make patch unzip wget cmake git ; \
+        apt-get -y install file gcc g++ libaio1 libasan6 libtool libz-dev make patch unzip wget cmake git ; \
     fi ; \
     cd /opt ; \
     wget https://github.com/Tencent/rapidjson/archive/refs/tags/v${RAPIDJSON_VERSION}.tar.gz ; \
