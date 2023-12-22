@@ -33,7 +33,7 @@ ARG IMAGE=debian
 ARG VERSION=12.0
 FROM ${IMAGE}:${VERSION} as builder
 
-ARG OPENLOGREPLICATOR_VERSION=1.3.0
+ARG OPENLOGREPLICATOR_VERSION=1.4.0
 ARG ARCH=x86_64
 ARG GIDOLR=1001
 ARG UIDOLR=1001
@@ -56,13 +56,16 @@ ENV PROTOBUF_VERSION_DIR 21.12
 ENV PROTOBUF_VERSION 3.21.12
 ENV RAPIDJSON_VERSION 1.1.0
 ENV LIBRDKAFKA_VERSION 2.2.0
+ENV PROMETHEUS_VERSION 1.1.0
 ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib
 ENV BUILDARGS="-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWITH_RAPIDJSON=/opt/rapidjson -S ../ -B ./"
 ENV BUILDARGS="${BUILDARGS}${WITHKAFKA:+ -DWITH_RDKAFKA=/opt/librdkafka}"
+ENV BUILDARGS="${BUILDARGS}${WITHPROMETHEUS:+ -DWITH_PROMETHEUS=/opt/prometheus}"
 ENV BUILDARGS="${BUILDARGS}${WITHORACLE:+ -DWITH_OCI=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}}"
 ENV BUILDARGS="${BUILDARGS}${WITHPROTOBUF:+ -DWITH_PROTOBUF=/opt/protobuf}"
 ENV COMPILEKAFKA="${WITHKAFKA:+1}"
+ENV COMPILEPROMETHEUS="${WITHPROMETHEUS:+1}"
 ENV COMPILEORACLE="${WITHORACLE:+1}"
 ENV COMPILEPROTOBUF="${WITHPROTOBUF:+1}"
 ENV TZ=${TZ:-Europe/Warsaw}
@@ -103,6 +106,19 @@ RUN set -eu ; \
         ./configure --prefix=/opt/librdkafka ; \
         make ; \
         make install ; \
+    fi ; \
+    if [ "${COMPILEPROMETHEUS}" != "" ]; then \
+        cd /opt ; \
+        wget https://github.com/jupp0r/prometheus-cpp/releases/download/v{PROMETHEUS_VERSION}/prometheus-cpp-with-submodules.tar.gz ; \
+        tar xzvf prometheus-cpp-with-submodules.tar.gz ; \
+        rm prometheus-cpp-with-submodules.tar.gz ; \
+        cd /opt/prometheus-cpp-with-submodules ; \
+        mkdir _build ; \
+        cd _build ; \
+        cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX:PATH=/opt/prometheus -DENABLE_PUSH=OFF -DENABLE_COMPRESSION=OFF ; \
+        cmake --build . --parallel 4 ; \
+        ctest -V ; \
+        cmake --install . ; \
     fi ; \
     if [ "${COMPILEPROTOBUF}" != "" ]; then \
         cd /opt ; \
@@ -157,6 +173,9 @@ RUN set -eu ; \
         if [ "${COMPILEPROTOBUF}" != "" ]; then \
             rm -rf /opt/protobuf-${PROTOBUF_VERSION} ; \
         fi ; \
+        if [ "${COMPILEPROMETHEUS}" != "" ]; then \
+            rm -rf /opt/prometheus-cpp-with-submodules ; \
+        fi ; \
         if [ -r /etc/centos-release ]; then \
             yum -y remove autoconf automake file gcc gcc-c++ libaio-devel libtool make patch unzip wget zlib-devel git ; \
             yum -y autoremove ; \
@@ -173,7 +192,7 @@ RUN set -eu ; \
 
 USER user1:oracle
 RUN set -eu ; \
-    export LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib; \
+    export LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/prometheus/lib; \
     /opt/OpenLogReplicator/OpenLogReplicator --version
 
 WORKDIR /opt/OpenLogReplicator
