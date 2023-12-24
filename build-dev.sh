@@ -46,5 +46,7 @@ ${BUILD_ARGS} \
 --build-arg UIDOLR=${UIDOLR} \
 --build-arg GIDORA=${GIDORA} \
 --build-arg WITHORACLE=1 \
+--build-arg WITHKAFKA=1 \
+--build-arg WITHPROMETHEUS=1 \
 --build-arg WITHPROTOBUF=1 \
 --build-arg BUILD_TYPE=Debug .

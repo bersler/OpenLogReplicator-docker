@@ -40,6 +40,7 @@ ARG UIDOLR=1001
 ARG GIDORA=54322
 ARG BUILD_TYPE
 ARG WITHKAFKA
+ARG WITHPROMETHEUS
 ARG WITHORACLE
 ARG WITHPROTOBUF
 ARG TZ
@@ -58,7 +59,7 @@ ENV RAPIDJSON_VERSION 1.1.0
 ENV LIBRDKAFKA_VERSION 2.2.0
 ENV PROMETHEUS_VERSION 1.1.0
 ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
-ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib
+ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/prometheus/lib:/opt/protobuf/lib
 ENV BUILDARGS="-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWITH_RAPIDJSON=/opt/rapidjson -S ../ -B ./"
 ENV BUILDARGS="${BUILDARGS}${WITHKAFKA:+ -DWITH_RDKAFKA=/opt/librdkafka}"
 ENV BUILDARGS="${BUILDARGS}${WITHPROMETHEUS:+ -DWITH_PROMETHEUS=/opt/prometheus}"
@@ -109,7 +110,7 @@ RUN set -eu ; \
     fi ; \
     if [ "${COMPILEPROMETHEUS}" != "" ]; then \
         cd /opt ; \
-        wget https://github.com/jupp0r/prometheus-cpp/releases/download/v{PROMETHEUS_VERSION}/prometheus-cpp-with-submodules.tar.gz ; \
+        wget https://github.com/jupp0r/prometheus-cpp/releases/download/v${PROMETHEUS_VERSION}/prometheus-cpp-with-submodules.tar.gz ; \
         tar xzvf prometheus-cpp-with-submodules.tar.gz ; \
         rm prometheus-cpp-with-submodules.tar.gz ; \
         cd /opt/prometheus-cpp-with-submodules ; \
@@ -155,6 +156,7 @@ RUN set -eu ; \
     mkdir /opt/OpenLogReplicator/log ; \
     mkdir /opt/OpenLogReplicator/scripts ; \
     mv ./OpenLogReplicator /opt/OpenLogReplicator ; \
+    cp -p /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION}/scripts/gencfg.sql /opt/OpenLogReplicator/scripts/gencfg.sql ; \
     mkdir /home/user1 ; \
     groupadd -g ${GIDOLR} user1 ; \
     if [ "${GIDOLR}" != "${GIDORA}" ]; then \
@@ -192,7 +194,7 @@ RUN set -eu ; \
 
 USER user1:oracle
 RUN set -eu ; \
-    export LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/prometheus/lib; \
+    export LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/prometheus/lib:/opt/protobuf/lib ; \
     /opt/OpenLogReplicator/OpenLogReplicator --version
 
 WORKDIR /opt/OpenLogReplicator
