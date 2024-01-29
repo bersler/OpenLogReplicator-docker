@@ -1,5 +1,5 @@
 # Dockerfile for OpenLogReplicator
-# Copyright (C) 2018-2023 Adam Leszczynski (aleszczynski@bersler.com)
+# Copyright (C) 2018-2024 Adam Leszczynski (aleszczynski@bersler.com)
 #
 # This file is part of OpenLogReplicator
 #
@@ -33,7 +33,7 @@ ARG IMAGE=debian
 ARG VERSION=12.0
 FROM ${IMAGE}:${VERSION} as builder
 
-ARG OPENLOGREPLICATOR_VERSION=1.4.0
+ARG OPENLOGREPLICATOR_VERSION=1.5.0
 ARG ARCH=x86_64
 ARG GIDOLR=1001
 ARG UIDOLR=1001
@@ -43,21 +43,20 @@ ARG WITHKAFKA
 ARG WITHPROMETHEUS
 ARG WITHORACLE
 ARG WITHPROTOBUF
-ARG TZ
 
 MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 
 ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
-ENV ORACLE_MINOR 18
+ENV ORACLE_MINOR 21
 # latest is 23.4
 ENV PROTOBUF_VERSION_DIR 21.12
 # latest is 3.23.4
 ENV PROTOBUF_VERSION 3.21.12
 ENV RAPIDJSON_VERSION 1.1.0
-ENV LIBRDKAFKA_VERSION 2.2.0
-ENV PROMETHEUS_VERSION 1.1.0
+ENV LIBRDKAFKA_VERSION 2.3.0
+ENV PROMETHEUS_VERSION 1.2.1
 ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/prometheus/lib:/opt/protobuf/lib
 ENV BUILDARGS="-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWITH_RAPIDJSON=/opt/rapidjson -S ../ -B ./"
@@ -69,7 +68,6 @@ ENV COMPILEKAFKA="${WITHKAFKA:+1}"
 ENV COMPILEPROMETHEUS="${WITHPROMETHEUS:+1}"
 ENV COMPILEORACLE="${WITHORACLE:+1}"
 ENV COMPILEPROTOBUF="${WITHPROTOBUF:+1}"
-ENV TZ=${TZ:-Europe/Warsaw}
 ENV DEBIAN_FRONTEND=noninteractive
 
 COPY run.sh /opt
@@ -100,7 +98,7 @@ RUN set -eu ; \
     fi ; \
     if [ "${COMPILEKAFKA}" != "" ]; then \
         cd /opt ; \
-        wget https://github.com/edenhill/librdkafka/archive/refs/tags/v${LIBRDKAFKA_VERSION}.tar.gz ; \
+        wget https://github.com/confluentinc/librdkafka/archive/refs/tags/v${LIBRDKAFKA_VERSION}.tar.gz ; \
         tar xzvf v${LIBRDKAFKA_VERSION}.tar.gz ; \
         rm v${LIBRDKAFKA_VERSION}.tar.gz ; \
         cd /opt/librdkafka-${LIBRDKAFKA_VERSION} ; \

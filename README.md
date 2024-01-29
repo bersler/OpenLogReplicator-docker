@@ -9,7 +9,8 @@ The script will automatically create a Docker image with the main binary placed 
 During image creation, you should see version banner in the output:
 
     + ./src/OpenLogReplicator
-    2023-05-31 23:59:56 [INFO] OpenLogReplicator v.1.3.0 (C) 2018-2023 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
+    2024-01-27 23:55:02 INFO  00000 OpenLogReplicator v1.5.0 (C) 2018-2024 by Adam Leszczynski (aleszczynski@bersler.com), see LICENSE file for licensing information
+    2024-01-27 23:55:02 INFO  00000 arch: x86_64, system: Linux, release: 6.1.0-16-amd64, build: Release, compiled: 2024-01-27 22:49, modules: Kafka OCI Prometheus Protobuf
 
 This would mean that the binary is correctly built.
 You can provide custom `GID/UID` - which is used to run OpenLogReplicator.
