@@ -152,6 +152,7 @@ RUN set -eu ; \
     cmake --build ./ --target OpenLogReplicator -j ; \
     mkdir /opt/OpenLogReplicator ; \
     mkdir /opt/OpenLogReplicator/log ; \
+    mkdir /opt/OpenLogReplicator/tmp ; \
     mkdir /opt/OpenLogReplicator/scripts ; \
     mv ./OpenLogReplicator /opt/OpenLogReplicator ; \
     cp -p /opt/OpenLogReplicator-${OPENLOGREPLICATOR_VERSION}/scripts/gencfg.sql /opt/OpenLogReplicator/scripts/gencfg.sql ; \
