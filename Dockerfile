@@ -78,7 +78,7 @@ RUN set -eu ; \
     fi ; \
     if [ -r /etc/debian_version ]; then \
         apt-get update ; \
-        apt-get -y install file gcc g++ libaio1 libasan6 libtool libz-dev make patch unzip wget cmake git ; \
+        apt-get -y install file gcc g++ libaio1 libasan8 libtool libz-dev make patch unzip wget cmake git ; \
     fi ; \
     cd /opt ; \
     wget https://github.com/Tencent/rapidjson/archive/refs/tags/v${RAPIDJSON_VERSION}.tar.gz ; \
