@@ -1,5 +1,5 @@
 # Dockerfile for OpenLogReplicator
-# Copyright (C) 2018-2024 Adam Leszczynski (aleszczynski@bersler.com)
+# Copyright (C) 2018-2025 Adam Leszczynski (aleszczynski@bersler.com)
 #
 # This file is part of OpenLogReplicator
 #
@@ -33,7 +33,7 @@ ARG IMAGE=debian
 ARG VERSION=12.0
 FROM ${IMAGE}:${VERSION} as builder
 
-ARG OPENLOGREPLICATOR_VERSION=1.8.2
+ARG OPENLOGREPLICATOR_VERSION=1.8.3
 ARG ARCH=x86_64
 ARG GIDOLR=1001
 ARG UIDOLR=1001
