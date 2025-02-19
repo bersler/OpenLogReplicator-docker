@@ -49,14 +49,14 @@ MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
 ENV LC_ALL=C
 ENV LANG en_US.UTF-8
 ENV ORACLE_MAJOR 19
-ENV ORACLE_MINOR 24
-# latest is 23.4
+ENV ORACLE_MINOR 26
+# latest is 23.6
 ENV PROTOBUF_VERSION_DIR 21.12
-# latest is 3.23.4
+# latest is 29.3
 ENV PROTOBUF_VERSION 3.21.12
 ENV RAPIDJSON_VERSION 1.1.0
-ENV LIBRDKAFKA_VERSION 2.5.3
-ENV PROMETHEUS_VERSION 1.2.4
+ENV LIBRDKAFKA_VERSION 2.8.0
+ENV PROMETHEUS_VERSION 1.3.0
 ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/prometheus/lib:/opt/protobuf/lib
 ENV BUILDARGS="-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWITH_RAPIDJSON=/opt/rapidjson -S ../ -B ./"
@@ -88,10 +88,10 @@ RUN set -eu ; \
     if [ "${COMPILEORACLE}" != "" ]; then \
         cd /opt ; \
         wget https://download.oracle.com/otn_software/linux/instantclient/${ORACLE_MAJOR}${ORACLE_MINOR}000/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
-        unzip instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
+        unzip -o instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
         rm instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
         wget https://download.oracle.com/otn_software/linux/instantclient/${ORACLE_MAJOR}${ORACLE_MINOR}000/instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
-        unzip instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
+        unzip -o instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
         rm instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
         cd /opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR} ; \
         ln -s libclntshcore.so.${ORACLE_MAJOR}.1 libclntshcore.so ; \
