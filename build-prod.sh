@@ -24,7 +24,7 @@ UIDOLR=${UIDOLR:=`id -r -u ${USER}`}
 GIDORA=${GIDORA:=54322}
 BASE_IMAGE=${BASE_IMAGE:=debian}
 BASE_VERSION=${BASE_VERSION:=12.0}
-TAG=${TAG:=bersler/openlogreplicator:${BASE_IMAGE}-${BASE_VERSION}}
+OLR_IMAGE=${OLR_IMAGE:=bersler/openlogreplicator:${BASE_IMAGE}-${BASE_VERSION}}
 BUILD_ARGS=""
 
 if [ "$GIDOLR" -eq "0" ] || [ "$UIDOLR" -eq "0" ]; then
@@ -37,7 +37,7 @@ if [ ! -z "${OPENLOGREPLICATOR_VERSION}" ]; then
 fi
 
 docker build \
--t ${TAG} \
+-t ${OLR_IMAGE} \
 -f Dockerfile \
 ${BUILD_ARGS} \
 --build-arg IMAGE=${BASE_IMAGE} \
