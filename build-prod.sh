@@ -40,6 +40,7 @@ docker build \
 -t ${OLR_IMAGE} \
 -f Dockerfile \
 ${BUILD_ARGS} \
+--no-cache \
 --build-arg IMAGE=${BASE_IMAGE} \
 --build-arg VERSION=${BASE_VERSION} \
 --build-arg GIDOLR=${GIDOLR} \
