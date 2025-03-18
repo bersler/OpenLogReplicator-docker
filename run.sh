@@ -19,4 +19,4 @@
 # <http://www.gnu.org/licenses/>.
 
 cd /opt/OpenLogReplicator
-./OpenLogReplicator 2&1 | tee -a /opt/OpenLogReplicator/log/OpenLogReplicator.err
+./OpenLogReplicator 2>&1 | tee -a /opt/OpenLogReplicator/log/OpenLogReplicator.err
