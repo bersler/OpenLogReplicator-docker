@@ -29,9 +29,9 @@
 #       $ docker build -t bersler/openlogreplicator:ubuntu-22.04 -f Dockerfile --build-arg IMAGE=ubuntu --build-arg VERSION=22.04 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
 #
 
-ARG IMAGE=debian
-ARG VERSION=12.0
-FROM ${IMAGE}:${VERSION} as builder
+ARG IMAGE=${IMAGE}
+ARG VERSION=${VERSION}
+FROM ${IMAGE}:${VERSION} AS builder
 
 ARG OPENLOGREPLICATOR_VERSION=1.8.5
 ARG ARCH=x86_64
@@ -44,20 +44,20 @@ ARG WITHPROMETHEUS
 ARG WITHORACLE
 ARG WITHPROTOBUF
 
-MAINTAINER Adam Leszczynski <aleszczynski@bersler.com>
+LABEL org.opencontainers.image.authors="Adam Leszczynski <aleszczynski@bersler.com>"
 
 ENV LC_ALL=C
-ENV LANG en_US.UTF-8
-ENV ORACLE_MAJOR 19
-ENV ORACLE_MINOR 26
+ENV LANG=en_US.UTF-8
+ENV ORACLE_MAJOR=19
+ENV ORACLE_MINOR=26
 # latest is 23.6
-ENV PROTOBUF_VERSION_DIR 21.12
+ENV PROTOBUF_VERSION_DIR=21.12
 # latest is 29.3
-ENV PROTOBUF_VERSION 3.21.12
-ENV RAPIDJSON_VERSION 1.1.0
-ENV LIBRDKAFKA_VERSION 2.8.0
-ENV PROMETHEUS_VERSION 1.3.0
-ENV OPENLOGREPLICATOR_VERSION ${OPENLOGREPLICATOR_VERSION}
+ENV PROTOBUF_VERSION=3.21.12
+ENV RAPIDJSON_VERSION=1.1.0
+ENV LIBRDKAFKA_VERSION=2.8.0
+ENV PROMETHEUS_VERSION=1.3.0
+ENV OPENLOGREPLICATOR_VERSION=${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/prometheus/lib:/opt/protobuf/lib
 ENV BUILDARGS="-DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DWITH_RAPIDJSON=/opt/rapidjson -S ../ -B ./"
 ENV BUILDARGS="${BUILDARGS}${WITHKAFKA:+ -DWITH_RDKAFKA=/opt/librdkafka}"
@@ -197,4 +197,4 @@ RUN set -eu ; \
     /opt/OpenLogReplicator/OpenLogReplicator --version
 
 WORKDIR /opt/OpenLogReplicator
-ENTRYPOINT /opt/run.sh
+ENTRYPOINT ["/opt/run.sh"]
