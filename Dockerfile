@@ -26,6 +26,7 @@
 # Put all downloaded files in the same directory as this Dockerfile
 # Run:
 #       $ docker build -t bersler/openlogreplicator:debian-12.0 -f Dockerfile --build-arg IMAGE=debian --build-arg VERSION=12.0 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
+#       $ docker build -t bersler/openlogreplicator:debian-13.0 -f Dockerfile --build-arg IMAGE=debian --build-arg VERSION=13.0 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
 #       $ docker build -t bersler/openlogreplicator:ubuntu-22.04 -f Dockerfile --build-arg IMAGE=ubuntu --build-arg VERSION=22.04 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
 #
 
@@ -78,13 +79,25 @@ RUN set -eu ; \
     fi ; \
     if [ -r /etc/debian_version ]; then \
         apt-get update ; \
-        apt-get -y install file gcc g++ libaio1 libasan8 libubsan1 libtool libz-dev make patch unzip wget cmake git ; \
+        if [ "$(cat /etc/debian_version)" = "12.0" ]; then \
+            apt-get -y install file gcc g++ libaio1 libasan8 libubsan1 libtool libz-dev make patch unzip wget cmake git ; \
+        elif [ "$(cat /etc/debian_version)" = "13.0" ]; then \
+            apt-get -y install file gcc g++ libaio1t64 libasan8 libubsan1 libtool libz-dev make patch unzip wget cmake git ; \
+            ln -s libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1 ; \
+        fi ; \
     fi ; \
     cd /opt ; \
     wget https://github.com/Tencent/rapidjson/archive/refs/tags/v${RAPIDJSON_VERSION}.tar.gz ; \
     tar xzvf v${RAPIDJSON_VERSION}.tar.gz ; \
     rm v${RAPIDJSON_VERSION}.tar.gz ; \
     ln -s rapidjson-${RAPIDJSON_VERSION} rapidjson ; \
+    if [ "${RAPIDJSON_VERSION}" = "1.1.0" ]; then \
+        cd rapidjson ; \
+        wget https://github.com/Tencent/rapidjson/commit/3b2441b87f99ab65f37b141a7b548ebadb607b96.diff ; \
+        patch -p1 < 3b2441b87f99ab65f37b141a7b548ebadb607b96.diff ; \
+        rm 3b2441b87f99ab65f37b141a7b548ebadb607b96.diff ; \
+        cd .. ; \
+    fi ; \
     if [ "${COMPILEORACLE}" != "" ]; then \
         cd /opt ; \
         wget https://download.oracle.com/otn_software/linux/instantclient/${ORACLE_MAJOR}${ORACLE_MINOR}000/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
