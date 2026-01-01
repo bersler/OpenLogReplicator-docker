@@ -19,4 +19,18 @@
 # <http://www.gnu.org/licenses/>.
 
 cd /opt/OpenLogReplicator
-./OpenLogReplicator $@ 2>&1 | tee -a /opt/OpenLogReplicator/log/OpenLogReplicator.err
+FLAG_FILE=/opt/OpenLogReplicator/log/.olr_started.flag
+if [ -x /opt/bin/OpenLogReplicator ]; then
+    OLR_EXEC=/opt/bin/OpenLogReplicator
+else
+    OLR_EXEC=./OpenLogReplicator
+fi
+
+if [ ! -f "$FLAG_FILE" ]; then
+    # first execution, provided arguments for startup
+    touch "$FLAG_FILE"
+    ${OLR_EXEC} "$@" 2>&1 | tee -a /opt/OpenLogReplicator/log/OpenLogReplicator.err
+else
+    # subsequent execution, start normally
+    ${OLR_EXEC} 2>&1 | tee -a /opt/OpenLogReplicator/log/OpenLogReplicator.err
+fi
