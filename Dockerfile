@@ -49,14 +49,13 @@ LABEL org.opencontainers.image.authors="Adam Leszczynski <aleszczynski@bersler.c
 
 ENV LC_ALL=C
 ENV LANG=en_US.UTF-8
-ENV ORACLE_MAJOR=19
-ENV ORACLE_MINOR=28
-# latest is 23.9
+ENV ORACLE_MAJOR=23
+ENV ORACLE_MINOR=26
 ENV PROTOBUF_VERSION_DIR=21.12
 # latest is 29.3
 ENV PROTOBUF_VERSION=3.21.12
 ENV RAPIDJSON_VERSION=1.1.0
-ENV LIBRDKAFKA_VERSION=2.11.0
+ENV LIBRDKAFKA_VERSION=2.12.1
 ENV PROMETHEUS_VERSION=1.3.0
 ENV OPENLOGREPLICATOR_VERSION=${OPENLOGREPLICATOR_VERSION}
 ENV LD_LIBRARY_PATH=/opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR}:/opt/librdkafka/lib:/opt/prometheus/lib:/opt/protobuf/lib
@@ -100,14 +99,15 @@ RUN set -eu ; \
     fi ; \
     if [ "${COMPILEORACLE}" != "" ]; then \
         cd /opt ; \
-        wget https://download.oracle.com/otn_software/linux/instantclient/${ORACLE_MAJOR}${ORACLE_MINOR}000/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
-        unzip -o instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
-        rm instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
-        wget https://download.oracle.com/otn_software/linux/instantclient/${ORACLE_MAJOR}${ORACLE_MINOR}000/instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
-        unzip -o instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
-        rm instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0dbru.zip ; \
+        wget https://download.oracle.com/otn_software/linux/instantclient/${ORACLE_MAJOR}${ORACLE_MINOR}000/instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0.zip ; \
+        unzip -o instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0.zip ; \
+        rm instantclient-basic-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0.zip ; \
+        rm -rf META-INF ; \
+        wget https://download.oracle.com/otn_software/linux/instantclient/${ORACLE_MAJOR}${ORACLE_MINOR}000/instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0.zip ; \
+        unzip -o instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0.zip ; \
+        rm instantclient-sdk-linux.x64-${ORACLE_MAJOR}.${ORACLE_MINOR}.0.0.0.zip ; \
+        rm -rf META-INF ; \
         cd /opt/instantclient_${ORACLE_MAJOR}_${ORACLE_MINOR} ; \
-        ln -s libclntshcore.so.${ORACLE_MAJOR}.1 libclntshcore.so ; \
     fi ; \
     if [ "${COMPILEKAFKA}" != "" ]; then \
         cd /opt ; \
