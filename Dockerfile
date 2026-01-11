@@ -30,8 +30,8 @@
 #       $ docker build -t bersler/openlogreplicator:ubuntu-22.04 -f Dockerfile --build-arg IMAGE=ubuntu --build-arg VERSION=22.04 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
 #
 
-ARG IMAGE=${IMAGE}
-ARG VERSION=${VERSION}
+ARG IMAGE
+ARG VERSION
 FROM ${IMAGE}:${VERSION} AS builder
 
 ARG OPENLOGREPLICATOR_VERSION=1.9.0
