@@ -30,8 +30,8 @@
 #       $ docker build -t bersler/openlogreplicator:ubuntu-22.04 -f Dockerfile --build-arg IMAGE=ubuntu --build-arg VERSION=22.04 --build-arg GIDOLR=${GIDOLR} --build-arg UIDOLR=${UIDOLR} --build-arg GIDORA=${GIDORA} --build-arg WITHORACLE=1 --build-arg WITHKAFKA=1 --build-arg WITHPROTOBUF=1 --build-arg BUILD_TYPE=Release .
 #
 
-ARG IMAGE
-ARG VERSION
+ARG IMAGE=debian
+ARG VERSION=13.0
 FROM ${IMAGE}:${VERSION} AS builder
 
 ARG OPENLOGREPLICATOR_VERSION=1.9.0
@@ -74,14 +74,14 @@ COPY run.sh /opt
 
 RUN set -eu ; \
     if [ -r /etc/centos-release ]; then \
-        yum -y install autoconf automake diffutils file gcc gcc-c++ libaio libaio-devel libasan libubsan libnsl libtool make patch tar unzip wget zlib-devel git ; \
+        yum -y install autoconf automake diffutils file gcc gcc-c++ libaio libaio-devel libasan libubsan libnsl libtool make patch tar unzip wget zlib-devel git curl ; \
     fi ; \
     if [ -r /etc/debian_version ]; then \
         apt-get update ; \
         if [ "$(cat /etc/debian_version)" = "12.0" ]; then \
-            apt-get -y install file gcc g++ libaio1 libasan8 libubsan1 libtool libz-dev make patch unzip wget cmake git ; \
+            apt-get -y install file gcc g++ libaio1 libasan8 libubsan1 libtool libz-dev make patch unzip wget cmake git curl ; \
         elif [ "$(cat /etc/debian_version)" = "13.0" ]; then \
-            apt-get -y install file gcc g++ libaio1t64 libasan8 libubsan1 libtool libz-dev make patch unzip wget cmake git ; \
+            apt-get -y install file gcc g++ libaio1t64 libasan8 libubsan1 libtool libz-dev make patch unzip wget cmake git curl ; \
             ln -s libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1 ; \
         fi ; \
     fi ; \
